@@ -112,5 +112,7 @@ func (s *Service) Uninstall() error {
 		return ErrServiceIsNotInstalled
 	}
 
-	return nil
+	file := "/etc/systemd/system/" + s.Name + ".service"
+
+	return os.Remove(file)
 }
