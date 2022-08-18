@@ -21,11 +21,11 @@ func main() {
 
 	exec, _ := getExecutablePath()
 	srv, err := SystemD.NewService(
-		"sample-daemon",
 		SystemD.Parameters{
+			Name: "sample-daemon",
 			Unit: SystemD.UnitSection{
 				Description:           "Sample Daemon",
-				After:                 "mysqld.service",
+				After:                 []string{"mysqld.service"},
 				StartLimitIntervalSec: 0,
 			},
 			Service: SystemD.ServiceSection{

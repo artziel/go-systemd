@@ -28,18 +28,19 @@ func validateParams(pms *Parameters) error {
 	if pms.Service.ExecStart == "" {
 		err = ErrServiceServiceExecStartIsRequired
 	}
-
 	if pms.Unit.Description == "" {
 		err = ErrServiceUnitDescriptionIsRequired
+	}
+	if pms.Name == "" {
+		err = ErrServiceNameIsRequired
 	}
 
 	return err
 }
 
-func NewService(name string, prms Parameters) (Service, error) {
+func NewService(prms Parameters) (Service, error) {
 	var err error
 	srv := Service{
-		Name:   name,
 		Params: prms,
 	}
 	err = validateParams(&prms)

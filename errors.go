@@ -10,3 +10,4 @@ var ErrSystemCtlCommandNotFound error = errors.New("systemctl command not found"
 
 var ErrServiceUnitDescriptionIsRequired error = errors.New("parameter Unit.Description is required")
 var ErrServiceServiceExecStartIsRequired error = errors.New("parameter Service.ExecStart is required")
+var ErrServiceNameIsRequired error = errors.New("parameter name is required")

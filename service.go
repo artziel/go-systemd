@@ -3,6 +3,7 @@ package GoSystemD
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 const parametersFormat = `[Unit]
@@ -23,7 +24,7 @@ WantedBy=%s
 
 type UnitSection struct {
 	Description           string
-	After                 string
+	After                 []string
 	StartLimitIntervalSec int
 }
 type ServiceSection struct {
@@ -37,6 +38,7 @@ type InstallSection struct {
 	WantedBy string
 }
 type Parameters struct {
+	Name    string
 	Unit    UnitSection
 	Service ServiceSection
 	Install InstallSection
@@ -48,7 +50,7 @@ func (p *Parameters) toString() string {
 	result = fmt.Sprintf(
 		parametersFormat,
 		p.Unit.Description,
-		p.Unit.After,
+		strings.Trim(strings.Join(p.Unit.After[:], " "), " "),
 		p.Unit.StartLimitIntervalSec,
 		p.Service.Type,
 		p.Service.Restart,
@@ -62,9 +64,7 @@ func (p *Parameters) toString() string {
 }
 
 type Service struct {
-	Name       string
-	Params     Parameters
-	BinaryPath string
+	Params Parameters
 }
 
 func (s *Service) Install() error {
@@ -84,7 +84,7 @@ func (s *Service) Install() error {
 		return ErrServiceIsInstalled
 	}
 
-	err = saveToFile("/etc/systemd/system/"+s.Name+".service", s.Params.toString())
+	err = saveToFile("/etc/systemd/system/"+s.Params.Name+".service", s.Params.toString())
 	if err != nil {
 		return err
 	}
@@ -93,7 +93,7 @@ func (s *Service) Install() error {
 }
 
 func (s *Service) isInstalled() bool {
-	file := "/etc/systemd/system/" + s.Name + ".service"
+	file := "/etc/systemd/system/" + s.Params.Name + ".service"
 	if _, err := os.Stat(file); err != nil {
 		return false
 	}
@@ -118,7 +118,7 @@ func (s *Service) Uninstall() error {
 		return ErrServiceIsNotInstalled
 	}
 
-	file := "/etc/systemd/system/" + s.Name + ".service"
+	file := "/etc/systemd/system/" + s.Params.Name + ".service"
 
 	return os.Remove(file)
 }
