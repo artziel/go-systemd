@@ -3,8 +3,6 @@ package GoSystemD
 import (
 	"fmt"
 	"os"
-
-	Util "github.com/artziel/go-utilities"
 )
 
 const parametersFormat = `[Unit]
@@ -70,7 +68,11 @@ type Service struct {
 }
 
 func (s *Service) Install() error {
-	ok, err := Util.IsRoot()
+	if !systemdExists() {
+		return ErrSystemCtlCommandNotFound
+	}
+
+	ok, err := isRoot()
 	if err != nil {
 		return err
 	}
@@ -82,7 +84,7 @@ func (s *Service) Install() error {
 		return ErrServiceIsInstalled
 	}
 
-	err = Util.SaveToNewTXTFile("/etc/systemd/system/"+s.Name+".service", s.Params.toString())
+	err = saveToFile("/etc/systemd/system/"+s.Name+".service", s.Params.toString())
 	if err != nil {
 		return err
 	}
@@ -100,7 +102,11 @@ func (s *Service) isInstalled() bool {
 }
 
 func (s *Service) Uninstall() error {
-	ok, err := Util.IsRoot()
+	if !systemdExists() {
+		return ErrSystemCtlCommandNotFound
+	}
+
+	ok, err := isRoot()
 	if err != nil {
 		return err
 	}

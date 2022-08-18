@@ -20,7 +20,7 @@ func getExecutablePath() (string, error) {
 func main() {
 
 	exec, _ := getExecutablePath()
-	srv := SystemD.NewService(
+	srv, err := SystemD.NewService(
 		"sample-daemon",
 		SystemD.Parameters{
 			Unit: SystemD.UnitSection{
@@ -40,8 +40,10 @@ func main() {
 			},
 		},
 	)
+	if err == nil {
+		err = srv.Install()
+	}
 
-	err := srv.Install()
 	if err != nil {
 		fmt.Printf("%s\n", err)
 	}
