@@ -39,11 +39,11 @@ func validateParams(pms *Parameters) error {
 }
 
 func NewService(prms Parameters) (Service, error) {
-	var err error
+	err := validateParams(&prms)
+
 	srv := Service{
 		Params: prms,
 	}
-	err = validateParams(&prms)
 
 	return srv, err
 }
