@@ -2,7 +2,7 @@ package GoSystemD
 
 import "os/exec"
 
-func systemdExists() bool {
+func SystemCtlExists() bool {
 	_, err := exec.LookPath("systemctl")
 	return err == nil
 }
@@ -44,10 +44,6 @@ func NewService(prms Parameters) (Service, error) {
 		Params: prms,
 	}
 	err = validateParams(&prms)
-
-	if systemdExists() {
-		err = ErrSystemCtlCommandNotFound
-	}
 
 	return srv, err
 }

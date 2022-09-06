@@ -68,9 +68,6 @@ type Service struct {
 }
 
 func (s *Service) Install() error {
-	if !systemdExists() {
-		return ErrSystemCtlCommandNotFound
-	}
 
 	ok, err := isRoot()
 	if err != nil {
@@ -102,10 +99,6 @@ func (s *Service) isInstalled() bool {
 }
 
 func (s *Service) Uninstall() error {
-	if !systemdExists() {
-		return ErrSystemCtlCommandNotFound
-	}
-
 	ok, err := isRoot()
 	if err != nil {
 		return err
